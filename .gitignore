@@ -1,4 +1,4 @@
 # Don't track content of these folders
-vendor/
-.idea/workspace.xml
-uploads/
+/vendor/
+/.idea/workspace.xml
+/uploads/
