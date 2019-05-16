@@ -1,6 +1,5 @@
 <?php
 use Slim\App;
-use utility\Session;
 date_default_timezone_set('Asia/Kuala_Lumpur');
 
 /*--------------------------------routes-------------------------------------*/
@@ -20,15 +19,15 @@ $app->group('/v1', function (App $app) {
     $app->put('/posts/edit/{id}', SQLpost::class. ':editPost');
 
     #login user
-    $app->post('/users/login', SQLpost::class. ':loginUser');
+    $app->post('/users/login', SQLuser::class. ':loginUser');
 
     #register user
-    $app->post('/users/register', SQLpost::class. ':registerUser');
+    $app->post('/users/register', SQLuser::class. ':registerUser');
 
     #logout user
-    $app->post('/users/logout', SQLpost::class. ':logoutUser');
+    $app->post('/users/logout', SQLuser::class. ':logoutUser');
 
     #delete user
-    $app->delete('/users/delete/{id}', SQLpost::class. ':deleteUser');
+    $app->delete('/users/delete/{id}', SQLuser::class. ':deleteUser');
 
 });

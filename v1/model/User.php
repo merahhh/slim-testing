@@ -4,33 +4,32 @@ class User
 {
     public function getConn()
     {
-        $conn = new mysqli("localhost", "root", "root", "guestbook");
-        return $conn;
+        return $conn = new PDO('mysql:host=localhost;dbname=guestbook;charset=utf8mb4', 'root', 'root');
     }
 
     public function getUserFName($userID){
         $userInfo = $this->getUserInfoByID($userID);
-        $first_name = trim($userInfo->first_name);
+        $first_name = $userInfo['first_name'];
         return $first_name;
     }
 
     public function getUserLName($userID){
         $userInfo = $this->getUserInfoByID($userID);
-        $last_name = trim($userInfo->last_name);
+        $last_name = $userInfo['last_name'];
 
         return $last_name;
     }
 
     public function getUserFullName($userID){
         $userInfo = $this->getUserInfoByID($userID);
-        $full_name = $userInfo->first_name . ' ' . $userInfo->last_name;
+        $full_name = $userInfo['first_name'] . ' ' . $userInfo['last_name'];
 
         return $full_name;
     }
 
     public function getUserEmail($userID){
         $userInfo = $this->getUserInfoByID($userID);
-        $email = $userInfo->email;
+        $email = $userInfo['email'];
 
         return $email;
     }
@@ -42,40 +41,27 @@ class User
         ];
     }
 
+    public function getInfoAssoc($email){
+        $stmt = $this->getUserInfoByEmail($email);
+        $result_assoc = $stmt->fetch(PDO::FETCH_ASSOC);     #returns array
+
+        return $result_assoc;
+    }
+
     public function getUserInfoByID($userID){
-        $connAcc = $this->getConn();
-        $sql_get_info = "SELECT first_name, last_name, email FROM users WHERE id = $userID";
-        $userInfo = $connAcc->query($sql_get_info);
-        $getUserInfo =  $userInfo->fetch_object();      #return stdClass object
+        $conn = $this->getConn();
+        $sql_get_info = $conn->prepare("SELECT * FROM users WHERE id = ?");
+        $sql_get_info->execute(array($userID));     #return PDOStatement
+        $getUserInfo =  $sql_get_info->fetch(PDO::FETCH_ASSOC);     #returns array
 
         return $getUserInfo;
     }
 
-    /**
-     * escape email to protect against SQL injections
-     * @param $post
-     * @return string
-     */
-    public function getPostObject($post){
+    public function getUserInfoByEmail($email){
         $conn = $this->getConn();
-        $object = $conn->escape_string($post);
+        $sql_get_info = $conn->prepare("SELECT * FROM users WHERE email= ?");
+        $sql_get_info->execute(array($email));      #return PDOStatement
 
-        return $object;
-    }
-
-    public function getUserInfoByEmail($post){
-        $email = $this->getPostObject($post);
-        $conn = $this->getConn();
-        $sql_get_info = "SELECT * FROM users WHERE email='$email'";
-        $result = $conn->query($sql_get_info);      #return mysqli_result object
-
-        return $result;
-    }
-
-    public function getInfoAssoc($post){
-        $email = $this->getPostObject($post);
-        $result_assoc = mysqli_fetch_assoc($this->getUserInfoByEmail($email));
-
-        return $result_assoc;
+        return $sql_get_info;
     }
 }

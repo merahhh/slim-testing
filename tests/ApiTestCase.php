@@ -11,7 +11,7 @@ use Slim\Http\Uri;
 abstract class ApiTestCase extends \PHPUnit\Framework\TestCase
 {
     /** @var Response */
-    private $response;
+    protected $response;
     /** @var App */
     private $app;
 

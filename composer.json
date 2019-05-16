@@ -4,7 +4,8 @@
         "ext-mysqli": "^7.2",
         "slim/twig-view": "^2.4",
       "ext-json": "*",
-      "ext-http": "*"
+      "ext-http": "*",
+      "ext-pdo": "*"
     },
 
     "autoload": {
