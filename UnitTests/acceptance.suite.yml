@@ -1,0 +1,9 @@
+class_name: WebGuy
+modules:
+    enabled:
+        - WebDriver
+        - \Helper\Acceptance
+    config:
+        WebDriver:
+            url: 'http://slim.io'
+            browser: 'firefox'

@@ -10,7 +10,6 @@ class SQLuser
 
     public function __construct($session, $userInfo)
     {
-        //parent::__construct($container);
         $this->userInfo = $userInfo;
         $this->session = $session;
         $this->mysqli = $this->userInfo->getConn();
@@ -45,7 +44,6 @@ class SQLuser
 
                 $sql_register = $this->mysqli->prepare("INSERT INTO users (first_name, last_name, email, password, hash) 
                     VALUES (?, ?, ?, ?, ?)");
-                //'$first_name', '$last_name', '$email', '$password', '$hash'
                 $result = $sql_register->execute(array($first_name, $last_name, $email, $password, $hash));
                 if($result == true){
                     $this->session->set('active', 1);
@@ -99,29 +97,35 @@ class SQLuser
     }
 
     public function logoutUser(Request $request, Response $response){
-        # Initialize the session.
-        # If you are using session_name("something"), don't forget it now!
-        session_start();
+        try{
+            # Initialize the session.
+            # If you are using session_name("something"), don't forget it now!
+            session_start();
 
-        # Unset all of the session variables.
-        $_SESSION = array();
+            # Unset all of the session variables.
+            $_SESSION = array();
 
-        # If it's desired to kill the session, also delete the session cookie.
-        # Note: This will destroy the session, and not just the session data!
-        if (ini_get("session.use_cookies")) {
-            $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000,
-                $params["path"], $params["domain"],
-                $params["secure"], $params["httponly"]
-            );
+            # If it's desired to kill the session, also delete the session cookie.
+            # Note: This will destroy the session, and not just the session data!
+            if (ini_get("session.use_cookies")) {
+                $params = session_get_cookie_params();
+                setcookie(session_name(), '', time() - 42000,
+                    $params["path"], $params["domain"],
+                    $params["secure"], $params["httponly"]
+                );
+            }
+
+            # Finally, destroy the session.
+            session_destroy();
+            $this->session->set('logged_in', false);
+            //$this->session->destroySession();
+            $message = 'Successfully logged out!';
+            return $response->withJson($message, 200);
+
+        } catch (exception $e){
+            $data = 'Oops, something went wrong!';
+            return $response->withJson($data, 300);
         }
-
-        # Finally, destroy the session.
-        session_destroy();
-        $this->session->set('logged_in', false);
-        //$this->session->destroySession();
-        $message = 'Successfully logged out!';
-        return $response->withJson($message, 200);
     }
 
     public function deleteUser(Request $request, Response $response){

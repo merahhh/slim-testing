@@ -219,4 +219,27 @@ class SQLUserTest extends TestCase
         $result = $this->sql_user->deleteUser($request, $response);
         $this->assertEquals(400, $result->getStatusCode());
     }
+
+    /**
+     * @backupGlobals disabled
+     * @runInSeparateProcess
+     */
+    public function testLogoutUserIsSuccessful(){
+        $request = $this->requestHTTP('POST', '/v1/users/logout', $request_data = null);
+        $response = $this->responseHTTP();
+        $result = $this->sql_user->logoutUser($request, $response);
+        $this->assertEquals(200, $result->getStatusCode());
+    }
+
+    /**
+     * @backupGlobals disabled
+     * @runInSeparateProcess
+     * supposed to fail
+     */
+    public function LogoutUserIsNotSuccessful_Error(){
+        $request = $this->requestHTTP('POST', '/v1/users/logout', $request_data = null);
+        $response = $this->responseHTTP();
+        $result = $this->sql_user->logoutUser($request, $response);
+        $this->assertEquals(300, $result->getStatusCode());
+    }
 }

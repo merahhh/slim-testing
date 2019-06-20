@@ -8,6 +8,7 @@ class User
     }
 
     public function getUserFName($userID){
+        //$userID = 11;
         $userInfo = $this->getUserInfoByID($userID);
         $first_name = $userInfo['first_name'];
         return $first_name;
